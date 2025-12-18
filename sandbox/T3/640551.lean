@@ -1,0 +1,164 @@
+import Mathlib
+
+/-
+Let $B=12$. Let $n \ge 2$ be an integer whose prime factors are $2$ or $3$.
+The representation of $1/n$ in base $12$ is $0.a_1a_2\dots a_k$ for some $k \ge 1$, where $a_k \ne 0$.
+Suppose that $n = \sum_{i=1}^k a_i$.
+
+Determine all possible values of $n$.
+Show the answer is that there are no such values of $n$.
+-/
+theorem number_theory_640551
+  (n : ℕ) (hn : n ≥ 2)
+  :
+  False
+  := by
+  sorry
+
+-- Let the base be $B=12$. The representation of $1/n$ in base $12$ is $0.a_1a_2\dots a_k$, where $a_k \ne 0$.
+-- This means $$ \frac{1}{n} = \sum_{i=1}^k \frac{a_i}{12^i} $$
+--
+-- where $0 \le a_i \le 11$ for all $i$, and $a_k \ne 0$.
+-- Multiplying by $12^k$, we get $12^k/n = \sum_{i=1}^k a_i 12^{k-i}$. Let $M = \sum_{i=1}^k a_i 12^{k-i}$. So $M = 12^k/n$.
+-- Since $M$ is an integer (as $a_i$ are integers), $n$ must divide $12^k$.
+-- The problem states that $n \ge 2$ is an integer whose prime factors are $2$ or $3$. So $n$ is of the form $2^x 3^y$ for non-negative integers $x,y$ such that $2^x 3^y \ge 2$.
+-- Since $12^k = (2^2 \cdot 3)^k = 2^{2k} 3^k$, $n=2^x 3^y$ dividing $12^k$ means $x \le 2k$ and $y \le k$.
+-- The condition $a_k \ne 0$ means that $k$ is the smallest positive integer such that $n$ divides $12^k$.
+-- Thus, $k = \max(\lceil x/2 \rceil, y)$
+--
+-- We are given that $n = \sum_{i=1}^k a_i$. Let $S = \sum_{i=1}^k a_i$. So $n=S$.
+-- Consider the expression $M-S$:
+-- $M-S = \left(\sum_{i=1}^k a_i 12^{k-i}\right) - \left(\sum_{i=1}^k a_i\right) = \sum_{i=1}^k a_i (12^{k-i}-1)$.
+-- The term for $i=k$ is $a_k(12^0-1)=0$. So $M-S = \sum_{i=1}^{k-1} a_i (12^{k-i}-1)$.
+-- Since $12^j-1$ is a multiple of $12-1=11$ for any integer $j \ge 0$, each term $a_i(12^{k-i}-1)$ is a multiple of $11$.
+-- Therefore, $M-S$ must be divisible by $11$.
+-- Substitute $M=12^k/n$ and $S=n$:
+-- So $12^k/n - n \equiv 0 \pmod{11}$.
+-- Since $12 \equiv 1 \pmod{11}$, we have $1^k/n - n \equiv 0 \pmod{11}$, which simplifies to $1/n - n \equiv 0 \pmod{11}$.
+-- Since $n=2^x 3^y$, $n$ is not divisible by $11$. So we can multiply by $n$:
+-- $1-n^2 \equiv 0 \pmod{11}$, which means $n^2 \equiv 1 \pmod{11}$.
+-- This implies $n \equiv 1 \pmod{11}$ or $n \equiv 10 \pmod{11}$. This is a necessary condition for $n$
+--
+-- Now, let's analyze the sign of $M-S$.
+-- $M-S = \sum_{i=1}^{k-1} a_i (12^{k-i}-1)$.
+-- Since $a_i \ge 0$ and $12^{k-i}-1 \ge 0$ for $i \le k-1$: $M-S \ge 0$.
+-- This means $12^k/n - n \ge 0$, so $12^k \ge n^2$.
+-- If $M-S=0$: This implies $a_i(12^{k-i}-1)=0$ for all $i=1, \dots, k-1$.
+-- Since $12^{k-i}-1 > 0$ for $i < k$, this requires $a_1=a_2=\dots=a_{k-1}=0$.
+-- In this case, $M = a_k 12^0 = a_k$ and $S = a_k$.
+-- So $n=a_k$. From $M=12^k/n$, we have $a_k = 12^k/a_k$, so $a_k^2 = 12^k$.
+-- Thus $n^2=12^k$, so $n = \sqrt{12^k} = (2^2 \cdot 3)^{k/2} = 2^k 3^{k/2}$.
+-- For $n$ to be an integer, $k$ must be an even integer. Let $k=2m$ for some positive integer $m$.
+-- Then $n = 2^{2m} 3^m = (12)^m$.
+-- So $a_k = n = 12^m$.
+-- However, $a_k$ is a digit in base 12, so $a_k \le 11$.
+-- $12^m \le 11$. If $m=1$, $12 \le 11$, which is false. For $m > 1$, $12^m$ is even larger.
+-- If $m=0$, $k=0$, which is not allowed as $k \ge 1$.
+-- Therefore, $M-S=0$ yields no solutions
+--
+-- So we must have $M-S > 0$. This implies $n^2 < 12^k$.
+-- Since $n=2^x 3^y$, $n^2 = 2^{2x} 3^{2y}$. And $12^k = 2^{2k} 3^k$.
+-- So $2^{2x} 3^{2y} < 2^{2k} 3^k$.
+-- This inequality can be written as $3^{2y-k} < 2^{2k-2x}$
+--
+-- Let's analyze based on $k = \max(\lceil x/2 \rceil, y)$.
+-- Case 1: $2y-k > 0$ (i.e. $y > k/2$).
+-- Then $3^{2y-k} \ge 3^1=3$ (since $2y-k$ must be an integer).
+-- So $2^{2k-2x} > 3^{2y-k} \ge 3$.
+-- This requires $2k-2x \ge \log_2(3) \approx 1.58$. Since $2k-2x$ is an even integer, $2k-2x \ge 2$.
+-- So $k-x \ge 1 \implies x \le k-1$.
+-- Since $x \le k-1$, $\lceil x/2 \rceil \le \lceil (k-1)/2 \rceil$.
+-- For $k \ge 1$, $\lceil (k-1)/2 \rceil \le k/2$. (If $k=1$, $\lceil 0/2 \rceil = 0 \le 1/2$. If $k=2$, $\lceil 1/2 \rceil = 1 \le 2/2=1$. If $k=3$, $\lceil 2/2 \rceil=1 \le 3/2$.)
+-- So $\lceil x/2 \rceil \le k/2$.
+-- Since $y > k/2$ and $\lceil x/2 \rceil \le k/2$, $k = \max(\lceil x/2 \rceil, y)$ must be $y$. So $k=y$.
+-- The condition $y > k/2$ becomes $k > k/2$, which is true for $k > 0$.
+-- So, this case is characterized by $k=y$ and $x \le k-1$.
+-- We also have the condition $n=S = \sum a_i$. Since $a_i \le 11$, $S \le 11k$. So $n \le 11k$.
+-- $2^x 3^k \le 11k$. Since $x \ge 0$, $2^0 3^k \le 2^x 3^k$. So $3^k \le 11k$.
+-- Let's check for which $k \ge 1$ this holds:
+-- $k=1: 3^1 = 3 \le 11(1)=11$. (True)
+-- $k=2: 3^2 = 9 \le 11(2)=22$. (True)
+-- $k=3: 3^3 = 27 \le 11(3)=33$. (True)
+-- $k=4: 3^4 = 81 \le 11(4)=44$. (False)
+-- To see that it's false for $k \ge 4$, let $f(k)=3^k$ and $g(k)=11k$. $f(4) > g(4)$.
+-- $f'(k) = 3^k \ln 3$ and $g'(k)=11$. For $k \ge 2$, $3^k \ln 3 \ge 9 \ln 3 \approx 9.88 > 11$ is false. $3^2 \ln 3 < 11$.
+-- $3^3 \ln 3 = 27 \ln 3 \approx 29.6 > 11$. So $3^k$ grows faster than $11k$ for $k \ge 3$.
+-- Since $3^4 > 11 \cdot 4$, $3^k > 11k$ for all $k \ge 4$.
+-- So we only need to check $k=1, 2, 3$.
+-- If $k=y=1$: $x \le 1-1=0$. So $x=0$.
+-- $n=2^0 3^1 = 3$. Check condition $n^2 \equiv 1 \pmod{11}$: $3^2=9 \not\equiv 1 \pmod{11}$. So $n=3$ is not a solution.
+-- If $k=y=2$: $x \le 2-1=1$. So $x=0$ or $x=1$.
+-- $n=2^0 3^2 = 9$. Check $n^2 \equiv 1 \pmod{11}$: $9^2=81 \equiv 4 \not\equiv 1 \pmod{11}$. So $n=9$ is not a solution.
+-- $n=2^1 3^2 = 18$. Check $n^2 \equiv 1 \pmod{11}$: $18 \equiv 7 \pmod{11}$, so $18^2 \equiv 7^2=49 \equiv 5 \not\equiv 1 \pmod{11}$. So $n=18$ is not a solution.
+-- If $k=y=3$: $x \le 3-1=2$. So $x=0, 1, 2$.
+-- $n=2^0 3^3 = 27$. $27 \equiv 5 \pmod{11}$, so $27^2 \equiv 5^2=25 \equiv 3 \not\equiv 1 \pmod{11}$. So $n=27$ is not a solution.
+-- $n=2^1 3^3 = 54$. $54 \equiv 10 \pmod{11}$, so $54^2 \equiv 10^2=100 \equiv 1 \pmod{11}$. This is a candidate.
+-- Let's check $n \le 11k$: $54 \le 11(3)=33$. This is false. So $n=54$ is not a solution.
+-- $n=2^2 3^3 = 4 \cdot 27 = 108$. $108 \equiv 9 \pmod{11}$, so $108^2 \equiv 9^2=81 \equiv 4 \not\equiv 1 \pmod{11}$. So $n=108$ is not a solution.
+-- So far, no solutions from Case 1
+--
+-- Case 2: $2y-k = 0$ (i.e. $y=k/2$).
+-- Then $k$ must be an even integer. $3^0 < 2^{2k-2x} \implies 1 < 2^{2k-2x}$.
+-- This means $2k-2x > 0$. Since $2k-2x$ is an even integer, $2k-2x \ge 2$. So $x \le k-1$.
+-- $k=\max(\lceil x/2 \rceil, y) = \max(\lceil x/2 \rceil, k/2)$.
+-- Since $x \le k-1$, then $\lceil x/2 \rceil \le \lceil (k-1)/2 \rceil$.
+-- If $k$ is even, let $k=2m$. Then $\lceil (2m-1)/2 \rceil = \lceil m-1/2 \rceil = m = k/2$.
+-- So $\lceil x/2 \rceil \le k/2$.
+-- Then $k = \max(\lceil x/2 \rceil, k/2) = k/2$. This implies $k=0$.
+-- But $k \ge 1$. So this case yields no solutions
+--
+-- Case 3: $2y-k < 0$ (i.e. $y < k/2$).
+-- Then $3^{2y-k} < 2^{2k-2x}$ becomes $1/3^{k-2y} < 2^{2k-2x}$. $k-2y \ge 1$ as $k, 2y$ are integers.
+-- Since $y < k/2$, $y$ cannot be $k$. So $k=\max(\lceil x/2 \rceil, y)$ must be $\lceil x/2 \rceil$.
+-- So $k = \lceil x/2 \rceil$. This means $k-1 < x/2 \le k$. So $2k-2 < x \le 2k$.
+-- So $x=2k-1$ or $x=2k$.
+-- If $x=2k$: $2k-2x = 2k-4k = -2k$.
+-- The inequality becomes $1/3^{k-2y} < 2^{-2k} = 1/2^{2k}$.
+-- So $2^{2k} < 3^{k-2y}$.
+-- Since $y < k/2$, $2y \le k-1$. So $k-2y \ge k-(k-1)=1$.
+-- Smallest value of $k-2y$ is $1$.
+-- Is $2^{2k} < 3^1=3$ possible? If $k=1$, $2^2=4 < 3$ is false. Larger $k$ makes $2^{2k}$ even larger.
+-- So $x \ne 2k$.
+-- If $x=2k-1$: $2k-2x = 2k-2(2k-1) = 2k-4k+2 = 2-2k$.
+-- The inequality becomes $1/3^{k-2y} < 2^{2-2k}$. So $2^{2k-2} < 3^{k-2y}$.
+-- If $k=1$: $x=2(1)-1=1$. $2^{2(1)-2}=2^0=1$.
+-- $y < k/2 \implies y < 1/2 \implies y=0$.
+-- So $k-2y = 1-0=1$.
+-- The inequality becomes $1 < 3^1=3$. This is true.
+-- So $(x,y,k)=(1,0,1)$ falls in this case. This corresponds to $n=2^1 3^0 = 2$.
+-- For $n=2$, $k=\max(\lceil 1/2 \rceil, 0)=1$. This is consistent.
+-- Check condition $n^2 \equiv 1 \pmod{11}$: $2^2=4 \not\equiv 1 \pmod{11}$. So $n=2$ is not a solution.
+-- What if $k \ge 2$?
+-- $2^{2k-2} < 3^{k-2y}$. We know $k-2y \ge 1$.
+-- If $k-2y=1$, is $2^{2k-2} < 3$ possible? $2^{2(2)-2}=2^2=4 \not < 3$. No. So $k-2y$ must be larger.
+-- If $k-2y=2$, is $2^{2k-2} < 3^2=9$ possible? If $k=2$, $x=3$. $2^{2(2)-2}=4 < 9$. Yes.
+-- So $(x,y,k)=(3,0,2)$ is possible here because $y=0 < k/2=1$. $k-2y=2$.
+-- $n=2^3=8$. Check $n^2 \equiv 1 \pmod{11}$: $8^2=64 \equiv 9 \not\equiv 1 \pmod{11}$. So $n=8$ is not a solution.
+-- If $k=3$, $x=5$. $2^{2(3)-2}=2^4=16$. $y < 3/2 \implies y \le 1$. $k-2y = 3-2y$. If $y=1, k-2y=1$. $16 < 3^1$ (false). If $y=0, k-2y=3$. $16 < 3^3=27$. Yes.
+-- So $(x,y,k)=(5,0,3)$ is possible. $n=2^5=32$.
+-- $n=32 \equiv -1 \equiv 10 \pmod{11}$. $32^2 \equiv (-1)^2=1 \pmod{11}$. This is a candidate.
+-- For $n=32$, $x=5, y=0$. $k=\max(\lceil 5/2 \rceil, 0) = \max(3,0)=3$. This is consistent.
+-- Condition $n \le 11k$: $32 \le 11(3)=33$. This is true.
+-- So we must check $n=32$ more carefully.
+-- $S=n=32$. $k=3$.
+-- $1/32 = (a_1 \cdot 12^2 + a_2 \cdot 12 + a_3)/12^3$.
+-- $M = 12^3/32 = 1728/32 = 54$.
+-- We require $a_1+a_2+a_3 = S = 32$.
+-- The digits $a_1, a_2, a_3$ are found by $M = a_1 \cdot 12^2 + a_2 \cdot 12 + a_3 = 54$.
+-- $144 a_1 + 12 a_2 + a_3 = 54$.
+-- Since $a_i \ge 0$, $a_1$ must be $0$ (as $144 > 54$).
+-- So $12 a_2 + a_3 = 54$.
+-- Since $0 \le a_3 \le 11$, $12 a_2 = 54-a_3$. So $43 \le 12a_2 \le 54$.
+-- The only multiple of 12 in $[43, 54]$ is $48$. So $12a_2=48 \implies a_2=4$.
+-- Then $a_3=54-48=6$.
+-- So the digits are $(a_1,a_2,a_3)=(0,4,6)$.
+-- We check $a_k \ne 0$: $a_3=6 \ne 0$. This is correct.
+-- Now we check $n = a_1+a_2+a_3$:
+-- $32 = 0+4+6 = 10$. This statement $32=10$ is false.
+-- So $n=32$ is not a solution
+--
+-- All cases have been checked and no solutions have been found.
+-- The condition $n^2 \equiv 1 \pmod{11}$ eliminated many potential values of $n$.
+-- The condition $n \le 11k$ eliminated $n=54$.
+-- For $n=32$, the sum of digits did not match $n$
+-- Therefore, there are no such values of $n$.
